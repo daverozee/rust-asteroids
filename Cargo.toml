@@ -1,0 +1,10 @@
+[package]
+name = "rust-asteroids"
+version = "0.1.0"
+edition = "2024"
+description = "A vector-style Asteroids rendition built with Rust and macroquad"
+license = "MIT"
+repository = "https://github.com/daverozee/rust-asteroids"
+
+[dependencies]
+macroquad = "0.4.15"
