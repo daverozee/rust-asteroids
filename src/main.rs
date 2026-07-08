@@ -416,6 +416,15 @@ impl Game {
                     Color::new(0.45, 1.0, 0.88, 1.0),
                 );
                 centered_text("A VECTOR-STYLE ARCADE RENDEZVOUS", HEIGHT * 0.44, 20, GRAY);
+                let bob = (get_time() as f32 * 2.4).sin() * 5.0;
+                draw_ship_outline(
+                    vec2(WIDTH / 2.0, HEIGHT * 0.515 + bob),
+                    -std::f32::consts::FRAC_PI_2,
+                    2.25,
+                    3.0,
+                    Color::new(0.62, 1.0, 0.92, 1.0),
+                    true,
+                );
                 centered_text("PRESS ENTER OR SPACE TO START", HEIGHT * 0.58, 24, WHITE);
                 centered_text(
                     "W / ↑  THRUST    A D / ← →  TURN    SPACE  FIRE",
@@ -516,24 +525,64 @@ fn wrapped_distance(a: Vec2, b: Vec2) -> f32 {
 }
 
 fn draw_ship(ship: &Ship, thrusting: bool) {
-    let forward = direction(ship.angle);
-    let side = direction(ship.angle + std::f32::consts::FRAC_PI_2);
-    let nose = ship.pos + forward * 18.0;
-    let left = ship.pos - forward * 13.0 + side * 11.0;
-    let notch = ship.pos - forward * 7.0;
-    let right = ship.pos - forward * 13.0 - side * 11.0;
-    let color = Color::new(0.65, 1.0, 0.92, 1.0);
-    draw_line(nose.x, nose.y, left.x, left.y, 2.0, color);
-    draw_line(left.x, left.y, notch.x, notch.y, 2.0, color);
-    draw_line(notch.x, notch.y, right.x, right.y, 2.0, color);
-    draw_line(right.x, right.y, nose.x, nose.y, 2.0, color);
+    draw_ship_outline(
+        ship.pos,
+        ship.angle,
+        1.0,
+        2.4,
+        Color::new(0.65, 1.0, 0.92, 1.0),
+        thrusting,
+    );
+}
+
+fn draw_ship_outline(
+    pos: Vec2,
+    angle: f32,
+    scale: f32,
+    thickness: f32,
+    color: Color,
+    thrusting: bool,
+) {
+    let forward = direction(angle);
+    let side = direction(angle + std::f32::consts::FRAC_PI_2);
+    let nose = pos + forward * 18.0 * scale;
+    let left = pos - forward * 13.0 * scale + side * 11.0 * scale;
+    let notch = pos - forward * 7.0 * scale;
+    let right = pos - forward * 13.0 * scale - side * 11.0 * scale;
+
+    draw_line(nose.x, nose.y, left.x, left.y, thickness, color);
+    draw_line(left.x, left.y, notch.x, notch.y, thickness, color);
+    draw_line(notch.x, notch.y, right.x, right.y, thickness, color);
+    draw_line(right.x, right.y, nose.x, nose.y, thickness, color);
+    draw_line(
+        notch.x,
+        notch.y,
+        (pos + forward * 7.0 * scale).x,
+        (pos + forward * 7.0 * scale).y,
+        thickness * 0.6,
+        Color::new(color.r, color.g, color.b, 0.62),
+    );
 
     if thrusting {
-        let flame = ship.pos - forward * gen_range(20.0, 28.0);
-        let flame_left = ship.pos - forward * 11.0 + side * 5.0;
-        let flame_right = ship.pos - forward * 11.0 - side * 5.0;
-        draw_line(flame_left.x, flame_left.y, flame.x, flame.y, 1.6, ORANGE);
-        draw_line(flame.x, flame.y, flame_right.x, flame_right.y, 1.6, ORANGE);
+        let flame = pos - forward * gen_range(20.0 * scale, 28.0 * scale);
+        let flame_left = pos - forward * 11.0 * scale + side * 5.0 * scale;
+        let flame_right = pos - forward * 11.0 * scale - side * 5.0 * scale;
+        draw_line(
+            flame_left.x,
+            flame_left.y,
+            flame.x,
+            flame.y,
+            thickness * 0.72,
+            ORANGE,
+        );
+        draw_line(
+            flame.x,
+            flame.y,
+            flame_right.x,
+            flame_right.y,
+            thickness * 0.72,
+            ORANGE,
+        );
     }
 }
 
