@@ -588,7 +588,7 @@ fn draw_letterbox() {
     let x = (screen_width() - viewport_w) / 2.0;
     let y = (screen_height() - viewport_h) / 2.0;
     set_camera(&Camera2D {
-        zoom: vec2(2.0 / WIDTH, -2.0 / HEIGHT),
+        zoom: vec2(2.0 / WIDTH, 2.0 / HEIGHT),
         target: vec2(WIDTH / 2.0, HEIGHT / 2.0),
         viewport: Some((x as i32, y as i32, viewport_w as i32, viewport_h as i32)),
         ..Default::default()
